@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return jsonify({
-        "message": "Hello from the Mini DevOps Pipeline!",
+        "message": "Hello from the Mini DevOps Pipeline! Now automated via Jenkins CI/CD.",
         "hostname": socket.gethostname(),
         "env": os.environ.get("APP_ENV", "development")
     })
