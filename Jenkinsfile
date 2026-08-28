@@ -23,15 +23,22 @@ pipeline {
             }
         }
 
-        stage('Test') {
+                stage('Test') {
             steps {
-                sh """
-                    docker run -d --name test-container-${BUILD_NUMBER} -p 5050:5000 ${IMAGE_NAME}:${IMAGE_TAG}
-                    sleep 5
-                    curl -f http://localhost:5050/health
-                    docker stop test-container-${BUILD_NUMBER}
-                    docker rm test-container-${BUILD_NUMBER}
-                """
+                script {
+                    def testPort = 5050 + (env.BUILD_NUMBER.toInteger() % 100)
+                    try {
+                        sh """
+                            docker rm -f test-container-${BUILD_NUMBER} || true
+                            docker run -d --name test-container-${BUILD_NUMBER} -p ${testPort}:5000 ${IMAGE_NAME}:${IMAGE_TAG}
+                            sleep 5
+                            curl -f http://localhost:${testPort}/health
+                        """
+                    } finally {
+                        sh "docker stop test-container-${BUILD_NUMBER} || true"
+                        sh "docker rm test-container-${BUILD_NUMBER} || true"
+                    }
+                }
             }
         }
 
