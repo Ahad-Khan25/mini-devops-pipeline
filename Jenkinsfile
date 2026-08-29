@@ -23,16 +23,15 @@ pipeline {
             }
         }
 
-                stage('Test') {
+        stage('Test') {
             steps {
                 script {
-                    def testPort = 5050 + (env.BUILD_NUMBER.toInteger() % 100)
                     try {
                         sh """
                             docker rm -f test-container-${BUILD_NUMBER} || true
-                            docker run -d --name test-container-${BUILD_NUMBER} -p ${testPort}:5000 ${IMAGE_NAME}:${IMAGE_TAG}
+                            docker run -d --name test-container-${BUILD_NUMBER} ${IMAGE_NAME}:${IMAGE_TAG}
                             sleep 5
-                            curl -f http://localhost:${testPort}/health
+                            docker exec test-container-${BUILD_NUMBER} python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"
                         """
                     } finally {
                         sh "docker stop test-container-${BUILD_NUMBER} || true"
