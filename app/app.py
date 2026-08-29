@@ -10,7 +10,7 @@ def index():
         "message": "Hello from the Mini DevOps Pipeline! Now automated via Jenkins CI/CD.",
         "hostname": socket.gethostname(),
         "env": os.environ.get("APP_ENV", "development"),
-        "version": "1.1"
+        "version": "1.5"
     })
 
 @app.route("/health")
