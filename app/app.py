@@ -9,7 +9,8 @@ def index():
     return jsonify({
         "message": "Hello from the Mini DevOps Pipeline! Now automated via Jenkins CI/CD.",
         "hostname": socket.gethostname(),
-        "env": os.environ.get("APP_ENV", "development")
+        "env": os.environ.get("APP_ENV", "development"),
+        "version": "1.1"
     })
 
 @app.route("/health")
