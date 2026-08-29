@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mini-devops-app
+  labels:
+    app: mini-devops-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mini-devops-app
+  template:
+    metadata:
+      labels:
+        app: mini-devops-app
+    spec:
+      containers:
+        - name: mini-devops-app
+          image: ahadkhanx25/mini-devops-app:8
+          ports:
+            - containerPort: 5000
+          env:
+            - name: APP_ENV
+              value: "production"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
